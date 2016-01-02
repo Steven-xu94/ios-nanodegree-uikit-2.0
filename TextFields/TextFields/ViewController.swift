@@ -11,16 +11,22 @@ import UIKit
 class ViewController: UIViewController, UITextFieldDelegate {
 
     // Outlets
-    @IBOutlet weak var textField1: UITextField!
-    @IBOutlet weak var textField2: UITextField!
-    @IBOutlet weak var textField3: UITextField!
+    @IBOutlet weak var emojiTextField: UITextField!
+    @IBOutlet weak var colorizerTextField: UITextField!
+    @IBOutlet weak var countTextField: UITextField!
+    @IBOutlet weak var randomColorTextField: UITextField!
     @IBOutlet weak var characterCountLabel: UILabel!
     
-    // Text Field Delegate objects
-    let emojiDelegate = EmojiTextFieldDelegate()
-    let colorizerDelegate = ColorizerTextFieldDelegate()
+    @IBOutlet weak var zipCodeTextField: UITextField!
+    @IBOutlet weak var cashTextFIeld: UITextField!
+    @IBOutlet weak var lockTextField: UITextField!
+    @IBOutlet weak var lockSwitch: UISwitch!
     
-    // Life Cycle Methods
+    let emoji = EmojiTextFieldDelegate()
+    let colorizer = ColorizerTextFieldDelegate()
+    let randomColor = RandomColorTextFieldDelegate()
+    let zipCode = ZipCodeTextFieldDelegate()
+    let cash = CashTextFieldDelegate()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,10 +34,14 @@ class ViewController: UIViewController, UITextFieldDelegate {
         // set the label to be hidden
         self.characterCountLabel.hidden = true
         
-        // Set the three delegates
-        self.textField1.delegate = emojiDelegate
-        self.textField2.delegate = colorizerDelegate
-        self.textField3.delegate = self
+        // Set the delegates
+        self.emojiTextField.delegate = emoji
+        self.colorizerTextField.delegate = colorizer
+        self.countTextField.delegate = self
+        self.randomColorTextField.delegate = randomColor
+        self.zipCodeTextField.delegate = zipCode
+        self.cashTextFIeld.delegate = cash
+        self.lockTextField.delegate = self
     }
 
     
@@ -39,18 +49,28 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
 
-        // Figure out what the new text will be, if we return true
-        var newText: NSString = textField.text!
-        newText = newText.stringByReplacingCharactersInRange(range, withString: string)
+        if textField == countTextField {
+            // Figure out what the new text will be, if we return true
+            var newText: NSString = textField.text!
+            newText = newText.stringByReplacingCharactersInRange(range, withString: string)
+            
+            // hide the label if the newText will be an empty string
+            self.characterCountLabel.hidden = (newText.length == 0)
+            
+            // Write the length of newText into the label
+            self.characterCountLabel.text = String(newText.length)
+
+            // returning true gives the text field permission to change its text
+            return true
+        }
         
-        // hide the label if the newText will be an empty string
-        self.characterCountLabel.hidden = (newText.length == 0)
+        else if textField == lockTextField {
+            return lockSwitch.on
+        }
         
-        // Write the length of newText into the label
-        self.characterCountLabel.text = String(newText.length)
-        
-        // returning true gives the text field permission to change its text
-        return true;
+        else {
+            return false
+        }
     }
 }
 
